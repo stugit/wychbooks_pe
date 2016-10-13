@@ -1,0 +1,84 @@
+$BASICTYPE "P"
+SUBROUTINE PutSalesOrder( SalesInfo, ErrText )
+* ---------------------------------------------------------------------------
+*  @@Name        : PutSalesOrder
+*  @@Description : Put a new sales order
+*  @@Version     : 1.0
+* ---------------------------------------------------------------------------
+*  Brief Description
+*  -----------------
+*  @@INFO
+* ---------------------------------------------------------------------------
+*  Warnings
+*  --------
+*
+* ---------------------------------------------------------------------------
+*  Modification History
+*  --------------------
+*  @@Log  Added autodoc comments.
+* ---------------------------------------------------------------------------
+* Keywords
+* --------
+*
+* --------------------------------------------------------------------------
+* To Do List
+* ----------
+*
+* --------------------------------------------------------------------------
+VOCNAME = "VOC"
+ErrText = ""
+OPEN "BOOK_TITLES" TO TITLES ELSE
+ErrText = "Cannot open BOOK_TITLES"
+RETURN
+END
+OPEN "BOOK_SALES" TO SALES ELSE
+ErrText = "Cannot open BOOK_SALES"
+RETURN
+END
+* Build and validate the sales record
+SalesRec<1> = SalesInfo<3>
+SalesRec<2> = SalesInfo<4>
+SalesRec<3,1> = SalesInfo<5>
+SalesRec<3,2> = SalesInfo<6>
+SalesRec<3,3> = SalesInfo<7>
+SalesRec<3,4> = SalesInfo<8>
+SalesRec<3,5> = SalesInfo<9>
+* Check the titles
+Dc = DCOUNT(SalesInfo<10>,@VM)
+FOR I = 1 TO Dc
+TitleId = SalesInfo<10, I>
+Qty = SalesInfo<12, I>
+READ TitleRec FROM TITLES, TitleId ELSE
+ErrText = "Invalid title id ":TitleId:" on line ":I
+RETURN
+END
+NEXT I              
+* All okay - Increment allocations for each title
+FOR I = 1 TO Dc
+TitleId = SalesInfo<10, I>
+Qty = SalesInfo<12, I>
+READU TitleRec FROM TITLES, TitleId THEN
+TitleRec<15> = TitleRec<15> + Qty
+WRITE TitleRec ON TITLES, TitleId
+END
+SalesRec<4, I> = TitleId
+SalesRec<5, I> = Qty
+SalesRec<6, I> = TitleRec<9>
+SalesRec<7, I> = SalesInfo<13, I>
+NEXT I
+* Key is date * time * sequence (for historic reasons)
+Counter = 0
+Found = @FALSE
+LOOP
+Counter += 1
+Key = ICONV(SalesInfo<1>,"D"):"*":ICONV(SalesInfo<2>,"MT"):"*":Counter
+READU SalesRec FROM SALES, Key THEN
+RELEASE SALES, Key
+END ELSE
+Found = @TRUE
+END
+UNTIL Found DO
+REPEAT
+WRITE SalesRec ON SALES, Key
+RETURN
+

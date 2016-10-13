@@ -1,0 +1,64 @@
+$BASICTYPE "P"
+SUBROUTINE GetTitleDetails( Id, BookInfo, ErrText)
+* ---------------------------------------------------------------------------
+*  @@Name        : GetTitleDetails
+*  @@Description :
+*  @@Version     : 1.0
+* ---------------------------------------------------------------------------
+*  Brief Description
+*  -----------------
+*  @@INFO
+* ---------------------------------------------------------------------------
+*  Warnings
+*  --------
+*
+* ---------------------------------------------------------------------------
+*  Modification History
+*  --------------------
+*  @@Log  Added autodoc comments.
+* ---------------------------------------------------------------------------
+* Keywords
+* --------
+*
+* --------------------------------------------------------------------------
+* To Do List
+* ----------
+*
+* --------------------------------------------------------------------------
+VOCNAME = "VOC"
+ErrText = ""
+BookInfo = ""
+OPEN "BOOK_TITLES" TO TITLES ELSE
+ErrText = "Cannot open BOOK_TITLES"
+RETURN
+END
+OPEN "BOOK_AUTHORS" TO AUTHORS ELSE
+ErrText = "Cannot open BOOK_AUTHORS"
+RETURN
+END
+OPEN "BOOK_READERS" TO READERS ELSE
+ErrText = "Cannot open BOOK_READERS"
+RETURN
+END
+READ TitleRec FROM TITLES, Id ELSE
+ErrText = "Book is not present"
+RETURN
+END
+BookInfo<1> = TitleRec<1>
+BookInfo<2> = TitleRec<2>
+READV AuthorName FROM AUTHORS, TitleRec<2>, 1 ELSE
+AuthorName = "Unknown"
+END
+BookInfo<3> = AuthorName
+BookInfo<4> = TitleRec<3>
+READV ReaderName FROM READERS, TitleRec<3>, 1 ELSE
+ReaderName = "Unknown"
+END
+BookInfo<5> = ReaderName
+BookInfo<6> = TitleRec<8>
+BookInfo<8> = TitleRec<12>
+BookInfo<9> = TitleRec<11>
+BookInfo<7> = TitleRec<9> ;* NOTE whole pence
+BookInfo<10> = TitleRec<5>
+RETURN
+

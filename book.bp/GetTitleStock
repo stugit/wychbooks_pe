@@ -1,0 +1,43 @@
+$BASICTYPE "P"
+SUBROUTINE GetTitleStock( Id, Units, Allocated, ErrText)
+* ---------------------------------------------------------------------------
+*  @@Name        : GetTitleStock
+*  @@Description : Get number in stock or allocated
+*  @@Version     : 1.0
+* ---------------------------------------------------------------------------
+*  Brief Description
+*  -----------------
+*  @@INFO
+* ---------------------------------------------------------------------------
+*  Warnings
+*  --------
+*
+* ---------------------------------------------------------------------------
+*  Modification History
+*  --------------------
+*  @@Log  Added autodoc comments.
+* ---------------------------------------------------------------------------
+* Keywords
+* --------
+*
+* --------------------------------------------------------------------------
+* To Do List
+* ----------
+*
+* --------------------------------------------------------------------------
+VOCNAME = "VOC"
+ErrText = ""
+Allocated = 0
+Units = 0
+OPEN "BOOK_TITLES" TO TITLES ELSE
+ErrText = "Cannot open BOOK_TITLES"
+RETURN
+END
+READ TitleRec FROM TITLES, Id ELSE
+ErrText = "Book is not present"
+RETURN
+END
+Units = TitleRec<5>
+Allocated = TitleRec<15>
+RETURN
+

@@ -1,0 +1,102 @@
+$BASICTYPE "P"
+PROGRAM ShowTitle
+*------------------------------------------------------------------------
+*      Name          : ShowTitle
+*      Description   : Show a title record
+*      Notes         :
+*      Author        :
+*      Called By     :
+*------------------------------------------------------------------------
+* Notes
+* =====
+*
+*------------------------------------------------------------------------
+* Syntax
+* ------
+*------------------------------------------------------------------------
+* Modification History
+* --------------------
+*------------------------------------------------------------------------
+VOCNAME = "VOC"
+PROMPT ""
+OPEN "BOOK_TITLES" TO F.BOOKTITLES ELSE
+CRT "Cannot open BOOK_TITLES"
+STOP
+END
+OPEN "BOOK_AUTHORS" TO F.BOOKAUTHORS ELSE
+CRT "Cannot open BOOK_AUTHORS"
+STOP
+END
+OPEN "BOOK_READERS" TO F.BOOKREADERS ELSE
+CRT "Cannot open BOOK_READERS"
+STOP
+END
+AllDone = @FALSE
+LOOP
+UNTIL AllDone DO
+GOSUB PrintScreen
+GOSUB GetTitle
+REPEAT
+STOP
+GetTitle:
+CRT @(20,2):
+INPUT Id
+IF Id = "" THEN
+AllDone = @TRUE
+RETURN
+END
+READ TitleRec FROM F.BOOKTITLES, Id ELSE
+CRT @(0,23):"Title not found":
+INPUT Ok:
+RETURN
+END
+CRT @(20,4):TitleRec< 1>
+FOR I = 1 TO 3
+AuthorId = TitleRec< 2,I>
+IF AuthorId <> "" THEN
+CRT @(20,4 + I):AuthorId
+READ AuthorRec FROM F.BOOKAUTHORS, AuthorId THEN
+CRT @(30,4+I):AuthorRec<1>
+END
+END
+NEXT
+FOR I = 1 TO 3
+ReaderId = TitleRec< 3,I>
+IF ReaderId <> "" THEN
+CRT @(20,7 + I):ReaderId
+READ ReaderRec FROM F.BOOKREADERS, ReaderId THEN
+CRT @(30,7+I):ReaderRec<1>
+END
+END
+NEXT
+CRT @(20,11):TitleRec< 4>
+CRT @(20,12):TitleRec< 5>
+CRT @(20,13):TitleRec< 6>
+CRT @(20,14):TitleRec< 8>
+CRT @(20,15):TitleRec< 9>
+CRT @(20,16):TitleRec< 11>
+CRT @(20,17):TitleRec< 12>
+CRT @(20,18):TitleRec< 13>
+CRT @(20,19):TitleRec< 14>
+CRT @(20,20):TitleRec< 15>
+CRT @(0,23):"Press any key to continue...":
+INPUT Ok,1:
+RETURN
+PrintScreen:
+CRT @(-1):
+CRT @(-11):("Book Title Display" "L#78"):@(-12):
+CRT @(3,2):"Title number : ":
+CRT @(3,4):"Short Title  : ":
+CRT @(3,5):"Author(s)    : ":
+CRT @(3,8):"Reader(s)    : ":
+CRT @(3,11):"Media Type   : ":
+CRT @(3,12):"Stock Level  : ":
+CRT @(3,13):"Format       : ":
+CRT @(3,14):"ISBN         : ":
+CRT @(3,15):"Price        : ":
+CRT @(3,16):"Department   : ":
+CRT @(3,17):"Genre        : ":
+CRT @(3,18):"Publisher    : ":
+CRT @(3,19):"Published    : ":
+CRT @(3,20):"Allocated    : ":
+RETURN

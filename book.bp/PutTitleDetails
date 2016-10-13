@@ -1,0 +1,53 @@
+$BASICTYPE "P"
+SUBROUTINE PutTitleDetails(Id, TitleInfo, ErrText)
+*--------------------------------------------------------------------------
+*  Name        : PutTitleDetails
+*  Description : Update title details
+*  Author      : Brian Leach
+*  Date        :
+*  Project     :
+*  Module      : GENERAL
+*--------------------------------------------------------------------------
+*  Notes
+*  -----
+*--------------------------------------------------------------------------
+*  Modification History
+*  --------------------
+*
+*  Date        Who  Version     Description
+*  ----        ---  -------     -----------
+*--------------------------------------------------------------------------
+*  Version Stamp
+*  -------------
+!V!
+*--------------------------------------------------------------------------
+VOCNAME = "VOC"
+ErrText = ""
+OPEN "BOOK_TITLES" TO TITLES ELSE
+ErrText = "Cannot open BOOK_TITLES"
+RETURN
+END
+OPEN "BOOK_AUTHORS" TO AUTHORS ELSE
+ErrText = "Cannot open BOOK_AUTHORS"
+RETURN
+END
+OPEN "BOOK_READERS" TO READERS ELSE
+ErrText = "Cannot open BOOK_READERS"
+RETURN
+END
+READU TitleRec FROM TITLES, Id ELSE
+ErrText = "Book is not present"
+RELEASE TITLES, Id
+RETURN
+END
+TitleRec<1> = TitleInfo<1>
+TitleRec<2> = TitleInfo<2>
+TitleRec<3> = TitleInfo<4>
+TitleRec<8> = TitleInfo<6>
+TitleRec<11> = TitleInfo<9>
+TitleRec<12> = TitleInfo<8>
+TitleRec<9> = TitleInfo<7>
+TitleRec<5> = TitleInfo<10>
+WRITE TitleRec ON TITLES, Id
+RETURN
+

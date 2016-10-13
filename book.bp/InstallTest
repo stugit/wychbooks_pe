@@ -1,0 +1,9 @@
+$BASICTYPE "P"
+      SUBROUTINE InstallTest(InData, OutData, ErrText,Flags)
+      OPEN "VOC" TO VOC ELSE
+         ErrText = "Cannot open VOC"
+         Flags = 2
+         RETURN
+      END
+      WRITE "Installer Test" ON VOC,"BRIAN"
+      RETURN
